@@ -1,3 +1,5 @@
+
+  
 pragma solidity >=0.4.22 <0.6.0;
 
 /* In this simple example, there are two partners. 
@@ -28,28 +30,73 @@ address payable  Partner2 = 0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2;
         owner = msg.sender;
     }
 
-    function receivePmts() payable external {
+    //This contract will receive payments from anyone
+    function a_receivePmts() payable external {
         CumulativeReceivedBalance += msg.value;
         Partner1CapitalAccount += msg.value * Partner1Share / units;
         Partner2CapitalAccount += msg.value * Partner2Share / units;
     }
 
-    function makeDistributions() payable external {
+    //This pays out all partners
+    function b_makeDistributions() payable public {
         distrib2P1() ;
         distrib2P2() ;
     }
 
+
+    //This makes distributions to Partner 1
     function distrib2P1() payable public {
         CumulativePaidOutBalance += Partner1CapitalAccount;
         Partner1.transfer(Partner1CapitalAccount);  
         Partner1CapitalAccount = 0;
     }
+
+    //This makes distributions to Partner 2
     function distrib2P2() payable public {
         CumulativePaidOutBalance +=   Partner2CapitalAccount;
         Partner2.transfer(Partner2CapitalAccount);  
         Partner2CapitalAccount = 0;
     }
 
+
+
+    //For testing, it's useful to display account balances
+    function displayItems() external view returns (string memory, string memory, string memory, string memory, string memory) {
+        return (
+            string(abi.encodePacked("Contract balance:      ",uint2str(address(this).balance))), 
+            string(abi.encodePacked("CumulReceivedBal:      ",uint2str(CumulativeReceivedBalance))),
+            string(abi.encodePacked("CumulPaidOutBal:       ",uint2str(CumulativePaidOutBalance))),
+            string(abi.encodePacked("Ptnr1CapAcct:          ",uint2str(Partner1CapitalAccount))),
+            string(abi.encodePacked("Ptn21CapAcct:          ",uint2str(Partner2CapitalAccount)))
+            );
+    } 
+
+
+    //converts numbers to strings:
+     function uint2str(uint _i) internal pure returns (string memory _uintAsString) {
+        if (_i == 0) {
+            return "0";
+        }
+        uint j = _i;
+        uint len;
+        while (j != 0) {
+            len++;
+            j /= 10;
+        }
+        bytes memory bstr = new bytes(len);
+        uint k = len - 1;
+        while (_i != 0) {
+            bstr[k--] = byte(uint8(48 + _i % 10));
+            _i /= 10;
+        }
+        return string(bstr);
+    }
+
+    //just a handy way to get addresses:
+    function whoami () public view returns (address){return msg.sender;}
+
+
+/*
     function getBalanceOfThisContract() public view returns (uint) {
         //how to return the total balance locked in this contract???
         //return this.balance;
@@ -62,8 +109,7 @@ address payable  Partner2 = 0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2;
 
     function checkPartner1CapitalAcct() public view returns(uint256) {return(Partner1CapitalAccount);}
     function checkPartner2CapitalAcct() public view returns(uint256) {return(Partner2CapitalAccount);}
-    function whoami () public view returns (address){return msg.sender;}
-
+*/
 
 
 }
