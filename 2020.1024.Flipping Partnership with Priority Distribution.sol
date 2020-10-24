@@ -7,8 +7,8 @@ pragma solidity ^0.5.0;
 The contract will first receive funds. 
 Funds received are added to the partners respective capital accounts. 
 However, Partner 1 has a priority claim on the first cashflows, 
-    so Partner1 will sweep all funds until Partner1's hurdle has been met
-    after that, funds will be split between Partner1 and Partner2
+    so Partner1 will get 75% of all funds (and Parner2 25%) until Partner1's hurdle has been met
+    after that, Partner1  will get 25% of funds and Partner2 will get 75%
     
 For simplicity, partners are only allowed to withdraw their whole capital account balance.
 
